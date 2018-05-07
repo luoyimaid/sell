@@ -1,0 +1,1 @@
+BUILD_SUBMITTER -x -m baidu/RoboKit/fework -c "cd baidu/RoboKit/fework && sh build.sh" -u ./
