@@ -13,7 +13,7 @@
 
 <style lang="scss">
   body{
-    background: url("./assets/background.jpg") left top no-repeat;
+    background: url("http://robokit.baidu.com/durobot/v2/thirdpartyagent?req=get_pic&pid=53754608186&t=2&c=a29279ffec7fbaad2f24d34d1699064e") left top no-repeat;
     background-size: 100%;
   }
   #app {

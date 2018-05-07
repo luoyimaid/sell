@@ -129,7 +129,7 @@
             addUserInfo: function () {
                 let add_user = document.getElementsByClassName('addUser');
                 let add_user_info = add_user[0].value;
-                // let add_user_password = add_user[1].value;
+                let add_user_password = add_user[1].value;
                 let add_user_effective = getLocalTime(date);
                 let add_user_expiry = add_user[2].value;
 
@@ -144,6 +144,7 @@
                     // 将输入信息添加到列表
                     this.list.push({
                         account: add_user_info,
+                        password: add_user_password,
                         start_timestamp: add_user_effective,
                         end_timestamp: add_user_expiry
                     });
@@ -192,41 +193,33 @@
                 let set_user_effective = set_user_info[2].value;
                 let set_user_expiry = set_user_info[3].value;
 
-                // 更新生效和失效时间的请求
-                function updateTime() {
-                    // 发送请求的数据格式是 form-data 格式
-                    let accountFormData = publicFormData();
-                    accountFormData.append('req','update');
-                    accountFormData.append('account',that.list[that.select].account);
-                    accountFormData.append('start_timestamp',set_user_effective);
-                    accountFormData.append('end_timestamp',set_user_expiry);
-                    return axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',accountFormData);
-                }
+                // 更新账户时间请求
+                let accountFormData = publicFormData();
+                accountFormData.append('req','update');
+                accountFormData.append('account',that.list[that.select].account);
+                accountFormData.append('start_timestamp',new Date(set_user_effective).getTime());
+                accountFormData.append('end_timestamp',new Date(set_user_expiry).getTime());
+                axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',accountFormData).then(resp =>{
+                    console.log(resp.data);
+                    that.list[that.select].start_timestamp = set_user_effective;
+                    that.list[that.select].end_timestamp = set_user_expiry;
+                }).catch(err => {
+                    console.log(err);
+                });
 
-                // 更新密码的请求
-                function updatePassword() {
-                    // 发送请求的数据格式是 form-data 格式
+                // 更新密码的请求，密码是加密的，如果没有变更，则不需要请求更新
+                if(that.list[that.select].password !== set_user_password){
                     let passwordFormData = publicFormData();
                     passwordFormData.append('req','reset_password');
                     passwordFormData.append('account',that.list[that.select].account);
                     passwordFormData.append('password',set_user_password);
-                    return axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',passwordFormData);
-                }
-
-                // 合并请求并处理
-                axios.all([updateTime(),updatePassword()]).then(
-                    axios.spread(function(resp1,resp2) {
-                        console.log(resp1.data);
-                        console.log(resp2.data);
-                        // this.list[this.select].account = set_user_name;
+                    axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',passwordFormData).then(resp => {
+                        console.log(resp.data);
                         that.list[that.select].password = set_user_password;
-                        that.list[that.select].start_timestamp = set_user_effective;
-                        that.list[that.select].end_timestamp = set_user_expiry;
-                    })
-                ).catch(
-                    err1 => {console.log(err1)},
-                    err2 => {console.log(err2)}
-                );
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                }
 
                 // 隐藏弹窗
                 let edit_display = document.getElementById('editPage');
