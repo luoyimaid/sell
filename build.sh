@@ -6,8 +6,8 @@ rm -rf output
 mkdir -p output/bin
 mkdir -p output/bin/$APP_NAME
 
-cp -r src/* output/bin/$APP_NAME/
-cp -r index.html output/bin/
+cp -r sell/src/* output/bin/$APP_NAME/
+cp -r sell/index.html output/bin/
 
 #cd output/
 #tar cvzf $APP_NAME.tar.gz *
