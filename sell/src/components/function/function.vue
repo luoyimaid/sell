@@ -1,20 +1,31 @@
 <template>
     <div class="container">
-        <div class="addUsers">
-            <label>
+        <h4 style="margin-bottom: 20px;">添加新用户信息</h4>
+        <div class="addUsers clearfix">
+            <div>
                 <span>添加新用户名</span>
-                <input type="text" placeholder="用户名" class="addUser"/>
-            </label>
-            <label>
+                <input type="text" placeholder="用户名" @blur="judgeRepeat" class="addUser"/>
+                <span class="reminder">(用户名必须为邮箱前缀)</span>
+            </div>
+            <div>
                 <span>设置用户密码</span>
                 <input type="password" placeholder="设置用户密码" class="addUser"/>
-            </label>
-            <label>
+                <span class="reminder">(密码为6-16位数字或字母组合)</span>
+            </div>
+            <div>
+                <span>选择生效日期</span>
+                <input type="datetime-local" name="expiry_user_date" class="addUser" id="add_effective_time"/>
+                <span class="reminder">(默认为当前时间,可自行选择)</span>
+            </div>
+            <div>
                 <span>选择失效日期</span>
-                <input type="datetime-local" name="expiry_user_date" class="addUser"/>
-            </label>
-            <input type="button" value="新增" class="addButton" @click="addUserInfo"/>
+                <input type="datetime-local" name="expiry_user_date" class="addUser" id="add_expiry_time"/>
+                <span class="reminder">(失效时间必须在生效时间之后)</span>
+            </div>
         </div>
+        <input type="button" value="提交" class="addButton" @click="addUserInfo"/>
+
+        <h4 style="margin: 100px auto 20px;">历史添加记录</h4>
         <div class="userInfo">
             <table width="100%" border="1px solid white">
                 <thead>
@@ -65,6 +76,12 @@
     import axios from 'axios';
     import md5 from 'js-md5';
 
+    // 加0操作
+    function addZero(num){
+        num < 10 ? num = '0' + num : num;
+        return num;
+    }
+
     // 生成十位随机数
     function randomNum(n) {
         let t = '';
@@ -82,7 +99,7 @@
         let hour = now.getHours();
         let minute = now.getMinutes();
         let second = now.getSeconds();
-        return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+        return year + "-" + addZero(month) + "-" + addZero(date) + " " + addZero(hour) + ":" + addZero(minute) + ":" + addZero(second);
     }
 
     // 封装加密请求必须的参数
@@ -107,6 +124,14 @@
             }
         },
         methods: {
+            // 失去焦点时判断用户名是否重复
+            judgeRepeat: function(){
+                for(let i = 0; i < this.list.length; i++){
+                    if(this.list[i].account === document.getElementsByClassName('addUser')[0].value){
+                        alert('用户名已存在,不可重复添加！');
+                    }
+                }
+            },
             // 获取账户信息
             getUserInfo: function () {
                 // 发送请求的数据格式是 form-data 格式
@@ -127,34 +152,59 @@
             },
             // 添加账户信息
             addUserInfo: function () {
+                let repassword = /^[A-Za-z0-9]{6,16}$/;
+                let reminder = document.getElementsByClassName('reminder');
                 let add_user = document.getElementsByClassName('addUser');
                 let add_user_info = add_user[0].value;
                 let add_user_password = add_user[1].value;
-                let add_user_effective = getLocalTime(date);
-                let add_user_expiry = add_user[2].value;
+                let add_user_effective = add_user[2].value;
+                let add_user_expiry = add_user[3].value;
 
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('account', add_user[0].value);
                 addFormData.append('password', add_user[1].value);
-                addFormData.append('start_timestamp', new Date(getLocalTime(date)).getTime());
-                addFormData.append('end_timestamp', new Date(add_user[2].value).getTime());
-                axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', addFormData).then(resp => {
-                    console.log(resp.data);
-                    // 将输入信息添加到列表
-                    this.list.push({
-                        account: add_user_info,
-                        password: add_user_password,
-                        start_timestamp: add_user_effective,
-                        end_timestamp: add_user_expiry
+                addFormData.append('start_timestamp', new Date(add_user[2].value).getTime());
+                addFormData.append('end_timestamp', new Date(add_user[3].value).getTime());
+
+                if(!(repassword.test(add_user[1].value))){
+                    reminder[1].style.color = 'red';
+                }else if(new Date(add_user[3].value).getTime() <= new Date(add_user[2].value).getTime()){
+                    reminder[1].style.color = '#ccc';
+                    reminder[3].style.color = 'red';
+                }else{
+                    for(let i = 0; i < this.list.length; i++){
+                        if(this.list[i].account === add_user[0].value){
+                            let deleteData = publicFormData();
+                            deleteData.append('req', 'delete');
+                            deleteData.append('account',this.list[i].account);
+                            axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',deleteData).then(resp => {
+                                // http://testsidewear.baidu.com//durobot/v2/controlaccount
+                                console.log(resp.data);
+                                this.list.splice(i, 1);
+                            }).catch(err => {
+                                console.log(err);
+                            });
+                        }
+                    }
+                    axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', addFormData).then(resp => {
+                        console.log(resp.data);
+                        // 将输入信息添加到列表
+                        this.list.push({
+                            account: add_user_info,
+                            password: add_user_password,
+                            start_timestamp: add_user_effective,
+                            end_timestamp: add_user_expiry
+                        });
+                        // 然后清空输入信息
+                        add_user[0].value = '';
+                        add_user[1].value = '';
+                        reminder[1].style.color = '#ccc';
+                        reminder[3].style.color = '#ccc';
+                    }).catch(err => {
+                        console.log(err);
                     });
-                    // 然后清空输入信息
-                    add_user[0].value = '';
-                    add_user[1].value = '';
-                    add_user[2].value = '';
-                }).catch(err => {
-                    console.log(err);
-                });
+                }
             },
             // 编辑用户信息
             editUserInfo: function (index) {
@@ -170,8 +220,6 @@
             },
             // 删除用户信息
             deleteUserInfo: function (index) {
-                this.randomNum = randomNum(10);
-                this.timeTamp = date.getTime();
                 // 发送请求的数据格式是 form-data 格式
                 let formData = publicFormData();
                 formData.append('req', 'delete');
@@ -188,7 +236,7 @@
             editConfirm: function () {
                 let that = this;
                 let set_user_info = document.getElementsByClassName('setUser');
-                // let set_user_name = set_user_info[0].value;
+                let set_user_name = set_user_info[0].value;
                 let set_user_password = set_user_info[1].value;
                 let set_user_effective = set_user_info[2].value;
                 let set_user_expiry = set_user_info[3].value;
@@ -229,6 +277,21 @@
         created() {
             // 获取账号信息列表，在此定义
             this.getUserInfo();
+        },
+        mounted() {
+            // 初始化生效及失效时间
+            function initTime(now) {
+                let year = now.getFullYear();
+                let month = now.getMonth() + 1;
+                let date = now.getDate();
+                let hour = now.getHours();
+                let minute = now.getMinutes();
+                let second = now.getSeconds();
+                return year + "-" + addZero(month) + "-" + addZero(date) + "T" + addZero(hour) + ":" + addZero(minute) + ":" + addZero(second);
+            }
+            document.getElementById('add_effective_time').value = initTime(date);
+            document.getElementById('add_expiry_time').value = initTime(date);
+            console.log(initTime(date));
         }
     }
 </script>
@@ -239,24 +302,34 @@
         font-size: 25px;
         position: relative;
         .addUsers {
-            margin: 0 auto 50px;
-            label {
+            width: 1000px;
+            margin: 0 600px;
+            div {
+                float: left;
                 line-height: 60px;
+                margin-bottom: 20px;
+                /*margin-left: 300px;*/
                 span {
                     width: 80px;
                     line-height: 40px;
                 }
                 input {
-                    width: 300px;
+                    width: 450px;
                     height: 40px;
                     font-size: 25px;
                 }
+                .reminder{
+                    font-size: 20px;
+                    color: #ccc;
+                }
             }
-            .addButton {
-                width: 100px;
-                height: 60px;
-                font-size: 40px;
-            }
+        }
+        .addButton {
+            display: block;
+            margin:0 auto;
+            width: 150px;
+            height: 80px;
+            font-size: 25px;
         }
         .userInfo {
             table {

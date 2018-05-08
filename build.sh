@@ -3,9 +3,9 @@ PRODUCT_NAME="durobot"
 APP_NAME="durobot"
 rm -rf output
 
-mkdir -p output/function_page
+mkdir -p output/internal/account
 
-cp -r sell/dist/* output/function_page/
+cp -r sell/dist/* output/internal/account/
 
 #cd output/
 #tar cvzf $APP_NAME.tar.gz *
