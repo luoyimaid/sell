@@ -152,7 +152,9 @@
             },
             // 添加账户信息
             addUserInfo: function () {
+                // 正则匹配输入密码
                 let repassword = /^[A-Za-z0-9]{6,16}$/;
+
                 let reminder = document.getElementsByClassName('reminder');
                 let add_user = document.getElementsByClassName('addUser');
                 let add_user_info = add_user[0].value;
@@ -160,6 +162,7 @@
                 let add_user_effective = add_user[2].value;
                 let add_user_expiry = add_user[3].value;
 
+                // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('account', add_user[0].value);
@@ -167,12 +170,17 @@
                 addFormData.append('start_timestamp', new Date(add_user[2].value).getTime());
                 addFormData.append('end_timestamp', new Date(add_user[3].value).getTime());
 
+                // 密码不符合验证时，提示文字标红
                 if(!(repassword.test(add_user[1].value))){
                     reminder[1].style.color = 'red';
-                }else if(new Date(add_user[3].value).getTime() <= new Date(add_user[2].value).getTime()){
+                }
+                // 失效时间小于或等于生效时间时，提示文字标红
+                else if(new Date(add_user[3].value).getTime() <= new Date(add_user[2].value).getTime()){
                     reminder[1].style.color = '#ccc';
                     reminder[3].style.color = 'red';
-                }else{
+                }
+                else{
+                    // 判断用户名是否重复，用户名重复时，删除之前的用户名
                     for(let i = 0; i < this.list.length; i++){
                         if(this.list[i].account === add_user[0].value){
                             let deleteData = publicFormData();
@@ -187,6 +195,7 @@
                             });
                         }
                     }
+                    // 请求新增用户
                     axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', addFormData).then(resp => {
                         console.log(resp.data);
                         // 将输入信息添加到列表
@@ -227,6 +236,7 @@
                 axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',formData).then(resp => {
                     // http://testsidewear.baidu.com//durobot/v2/controlaccount
                     console.log(resp.data);
+                    // 删除用户
                     this.list.splice(index, 1);
                 }).catch(err => {
                     console.log(err);
