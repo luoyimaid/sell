@@ -11,7 +11,7 @@
         <input type="password" placeholder="请输入正确的密码" class="input"/>
       </label>
     </div>
-    <input class="submit" type="submit" value="提交" @click="toLogin"/>
+    <input class="submit" type="button" value="提交" @click="toLogin"/>
   </div>
 </template>
 
@@ -87,7 +87,7 @@
 <style lang="scss" scoped>
   .login{
     width: 450px;
-    margin: 300px auto;
+    margin: 200px auto;
     .content{
       width: 400px;
       font-size: 40px;
@@ -98,15 +98,11 @@
       }
     }
   }
-  h2,
-  .content,
-  .login{
-    color: #fff;
-  }
   .submit{
+      display: block;
     margin: 50px auto;
     width: 100px;
-    height: 60px;
+    linr-height: 60px;
     font-size: 60px;
   }
 </style>

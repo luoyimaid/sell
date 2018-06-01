@@ -5,12 +5,17 @@
             <div>
                 <span>添加新用户名</span>
                 <input type="text" placeholder="用户名" @blur="judgeRepeat" class="addUser"/>
-                <span class="reminder">(用户名必须为邮箱前缀)</span>
+                <span class="reminder">(用户名必须为邮箱前缀且不能重复添加)</span>
             </div>
             <div>
                 <span>设置用户密码</span>
                 <input type="password" placeholder="设置用户密码" class="addUser"/>
                 <span class="reminder">(密码为6-16位数字或字母组合)</span>
+            </div>
+            <div>
+                <span>重复用户密码</span>
+                <input type="password" placeholder="重复用户密码" class="addUser"/>
+                <span class="reminder">(密码与设置密码一致)</span>
             </div>
             <div>
                 <span>选择生效日期</span>
@@ -51,7 +56,7 @@
         </div>
         <div class="editPage" id="editPage">
             <div>
-                <span>用户名</span>
+                <span>用&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;名</span>
                 <input type="text" placeholder="用户名" class="setUser"/>
             </div>
             <div>
@@ -126,9 +131,10 @@
         methods: {
             // 失去焦点时判断用户名是否重复
             judgeRepeat: function(){
+                let reminder = document.getElementsByClassName('reminder');
                 for(let i = 0; i < this.list.length; i++){
                     if(this.list[i].account === document.getElementsByClassName('addUser')[0].value){
-                        alert('用户名已存在,不可重复添加！');
+                        reminder[0].style.color = 'red';
                     }
                 }
             },
@@ -138,7 +144,7 @@
                 let formData = publicFormData();
                 formData.append('req', 'list');
                 // 用post请求数据
-                axios.post(' http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', formData).then(resp => {
+                axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', formData).then(resp => {
                     this.list = Object.assign([], resp.data.data);
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
@@ -159,25 +165,34 @@
                 let add_user = document.getElementsByClassName('addUser');
                 let add_user_info = add_user[0].value;
                 let add_user_password = add_user[1].value;
-                let add_user_effective = add_user[2].value;
-                let add_user_expiry = add_user[3].value;
+                let add_user_effective = add_user[3].value;
+                let add_user_expiry = add_user[4].value;
 
                 // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('account', add_user[0].value);
                 addFormData.append('password', add_user[1].value);
-                addFormData.append('start_timestamp', new Date(add_user[2].value).getTime());
-                addFormData.append('end_timestamp', new Date(add_user[3].value).getTime());
+                addFormData.append('start_timestamp', new Date(add_user[3].value).getTime());
+                addFormData.append('end_timestamp', new Date(add_user[4].value).getTime());
 
                 // 密码不符合验证时，提示文字标红
                 if(!(repassword.test(add_user[1].value))){
                     reminder[1].style.color = 'red';
+                    reminder[2].style.color = '#ccc';
+                    reminder[4].style.color = '#ccc';
+                }
+                // 重复密码与密码不一致时，提示文字标红
+                else if (add_user[2].value !== add_user[1].value) {
+                    reminder[2].style.color = 'red';
+                    reminder[1].style.color = '#ccc';
+                    reminder[4].style.color = '#ccc';
                 }
                 // 失效时间小于或等于生效时间时，提示文字标红
-                else if(new Date(add_user[3].value).getTime() <= new Date(add_user[2].value).getTime()){
+                else if(new Date(add_user[4].value).getTime() <= new Date(add_user[3].value).getTime()){
                     reminder[1].style.color = '#ccc';
-                    reminder[3].style.color = 'red';
+                    reminder[2].style.color = '#ccc';
+                    reminder[4].style.color = 'red';
                 }
                 else{
                     // 判断用户名是否重复，用户名重复时，删除之前的用户名
@@ -206,10 +221,12 @@
                             end_timestamp: add_user_expiry
                         });
                         // 然后清空输入信息
-                        add_user[0].value = '';
-                        add_user[1].value = '';
-                        reminder[1].style.color = '#ccc';
-                        reminder[3].style.color = '#ccc';
+                        for(let i=0; i<add_user.length-2; i++) {
+                            add_user[i].value = '';
+                        }
+                        for(let i=0; i < reminder.length; i++) {
+                            reminder[i].style.color = '#ccc';
+                        }
                     }).catch(err => {
                         console.log(err);
                     });
@@ -308,7 +325,7 @@
 
 <style lang="scss" scoped>
     .container {
-        color: #fff;
+        /*color: #fff;*/
         font-size: 25px;
         position: relative;
         .addUsers {
@@ -342,6 +359,7 @@
             font-size: 25px;
         }
         .userInfo {
+            margin-bottom: 100px;
             table {
                 tbody,
                 thead {
@@ -362,15 +380,17 @@
             }
         }
         .editPage {
+            color: #fff;
             display: none;
             width: 600px;
             height: 600px;
             background-color: rgba(0, 0, 0, 0.5);
-            position: absolute;
-            left: 50%;
-            top: 50%;
-            margin-left: -300px;
-            /*margin-top: 150px;*/
+            position: fixed;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            margin: auto;
             input {
                 margin: 30px auto;
                 width: 400px;
