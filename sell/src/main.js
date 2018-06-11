@@ -20,9 +20,12 @@ import '@/assets/scss/reset.css';
 // 引入mint-ui组件
 import MintUI from 'mint-ui';
 import 'mint-ui/lib/style.css';
+import Element from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.prototype.$axios = axios;
 Vue.use(MintUI);
+Vue.use(Element);
 Vue.config.productionTip = false;
 
 /* eslint-disable no-new */

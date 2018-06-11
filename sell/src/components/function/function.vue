@@ -17,18 +17,31 @@
                 <input type="password" placeholder="重复用户密码" class="addUser"/>
                 <span class="reminder">(密码与设置密码一致)</span>
             </div>
-            <div>
-                <span>选择生效日期</span>
-                <input type="datetime-local" name="expiry_user_date" class="addUser" id="add_effective_time"/>
-                <span class="reminder">(默认为当前时间,可自行选择)</span>
+            <div class="block">
+                <span class="demonstration">选择生效日期</span>
+                <!--<input type="datetime-local" name="expiry_user_date" class="addUser" id="add_effective_time" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required/>-->
+                <el-date-picker
+                    v-model="value1"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    default-time="12:00:00">
+                </el-date-picker>
+                <span class="reminder reminder1">(默认为当前时间,可自行选择)</span>
             </div>
-            <div>
-                <span>选择失效日期</span>
-                <input type="datetime-local" name="expiry_user_date" class="addUser" id="add_expiry_time"/>
-                <span class="reminder">(失效时间必须在生效时间之后)</span>
+            <div class="block">
+                <span class="demonstration">选择失效日期</span>
+                <!--<input type="datetime-local" name="expiry_user_date" class="addUser" id="add_expiry_time" pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}" required/>-->
+                <el-date-picker
+                    v-model="value2"
+                    type="datetime"
+                    placeholder="选择日期时间"
+                    default-time="12:00:00">
+                </el-date-picker>
+                <span class="reminder reminder1">(失效时间必须在生效时间之后)</span>
             </div>
         </div>
         <input type="button" value="提交" class="addButton" @click="addUserInfo"/>
+        <!--<input type="hidden" id="timezone" name="timezone" value="-08:00">-->
 
         <h4 style="margin: 100px auto 20px;">历史添加记录</h4>
         <div class="userInfo">
@@ -126,6 +139,8 @@
                 list: [],
                 selectedList: {},
                 select: '',
+                value1: '',
+                value2: ''
             }
         },
         methods: {
@@ -165,16 +180,16 @@
                 let add_user = document.getElementsByClassName('addUser');
                 let add_user_info = add_user[0].value;
                 let add_user_password = add_user[1].value;
-                let add_user_effective = add_user[3].value;
-                let add_user_expiry = add_user[4].value;
+                // let add_user_effective = add_user[3].value;
+                // let add_user_expiry = add_user[4].value;
 
                 // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('account', add_user[0].value);
                 addFormData.append('password', add_user[1].value);
-                addFormData.append('start_timestamp', new Date(add_user[3].value).getTime());
-                addFormData.append('end_timestamp', new Date(add_user[4].value).getTime());
+                addFormData.append('start_timestamp', this.value1.getTime());
+                addFormData.append('end_timestamp', this.value2.getTime());
 
                 // 密码不符合验证时，提示文字标红
                 if(!(repassword.test(add_user[1].value))){
@@ -189,7 +204,7 @@
                     reminder[4].style.color = '#ccc';
                 }
                 // 失效时间小于或等于生效时间时，提示文字标红
-                else if(new Date(add_user[4].value).getTime() <= new Date(add_user[3].value).getTime()){
+                else if(this.value2.getTime() <= this.value1.getTime()){
                     reminder[1].style.color = '#ccc';
                     reminder[2].style.color = '#ccc';
                     reminder[4].style.color = 'red';
@@ -217,8 +232,8 @@
                         this.list.push({
                             account: add_user_info,
                             password: add_user_password,
-                            start_timestamp: add_user_effective,
-                            end_timestamp: add_user_expiry
+                            start_timestamp: this.value1,
+                            end_timestamp: this.value2
                         });
                         // 然后清空输入信息
                         for(let i=0; i<add_user.length-2; i++) {
@@ -263,11 +278,13 @@
             editConfirm: function () {
                 let that = this;
                 let set_user_info = document.getElementsByClassName('setUser');
-                let set_user_name = set_user_info[0].value;
+                // let set_user_name = set_user_info[0].value;
                 let set_user_password = set_user_info[1].value;
                 let set_user_effective = set_user_info[2].value;
                 let set_user_expiry = set_user_info[3].value;
 
+                set_user_info[2].blur();
+                set_user_info[3].blur();
                 // 更新账户时间请求
                 let accountFormData = publicFormData();
                 accountFormData.append('req','update');
@@ -306,24 +323,12 @@
             this.getUserInfo();
         },
         mounted() {
-            // 初始化生效及失效时间
-            function initTime(now) {
-                let year = now.getFullYear();
-                let month = now.getMonth() + 1;
-                let date = now.getDate();
-                let hour = now.getHours();
-                let minute = now.getMinutes();
-                let second = now.getSeconds();
-                return year + "-" + addZero(month) + "-" + addZero(date) + "T" + addZero(hour) + ":" + addZero(minute) + ":" + addZero(second);
-            }
-            document.getElementById('add_effective_time').value = initTime(date);
-            document.getElementById('add_expiry_time').value = initTime(date);
-            console.log(initTime(date));
+
         }
     }
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .container {
         /*color: #fff;*/
         font-size: 25px;
@@ -340,7 +345,7 @@
                     width: 80px;
                     line-height: 40px;
                 }
-                input {
+                input{
                     width: 450px;
                     height: 40px;
                     font-size: 25px;
@@ -348,6 +353,24 @@
                 .reminder{
                     font-size: 20px;
                     color: #ccc;
+                }
+                .reminder1 {
+                    margin-left: 240px;
+                }
+            }
+            .block {
+                float: left;
+                .demonstration{
+                    display: block;
+                    float: left;
+                    text-align: left;
+                    width: 160px;
+                    line-height: 40px;
+                }
+                input.el-input_inner {
+                    width: 450px;
+                    height: 40px;
+                    font-size: 25px;
                 }
             }
         }

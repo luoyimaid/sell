@@ -1,4 +1,9 @@
 output
-.idea/
-info_registration/
-/sell/idea/
+/.idea/
+
+/info_registration/.idea/
+/info_registration/build/
+/info_registration/config/
+/info_registration/test/
+
+/sell/.idea/

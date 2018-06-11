@@ -1,8 +1,6 @@
 <template>
     <div class="selectDate">
-        <span>1 选择开始参观日期:</span>
-        <date-picker :date="startTime" :option="option" :limit="limit" id="select_date"></date-picker>
-        <!--<input type="date" value="" id="select_date" :min="value" step="3"/>-->
+        <date-picker @change="localTimechange" :date="startTime" :option="option" :limit="limit" id="select_date"></date-picker>
     </div>
 </template>
 
@@ -31,8 +29,9 @@
         data() {
             return {
                 // value: getLocalTime(date),
+                value: '',
                 startTime: {
-                    time: getLocalTime(date)
+                    time: ""
                 },
                 option: {
                     type: 'day',
@@ -72,6 +71,15 @@
                 }]
             }
         },
+        methods: {
+            localTimechange: function(val) {
+                this.value = val;
+                this.$emit('datePickerEvent', {value: this.value});
+            }
+        },
+        mounted () {
+            this.startTime.time = getLocalTime(date);
+        }
     }
 </script>
 
@@ -82,17 +90,14 @@
     textarea{
         outline:none;
     }
-    .selectDate {
-        margin-bottom: 50px;
-        span {
-            display: inline-block;
-            width: 250px;
-        }
-        input {
-            width: 200px;
-            height: 25px;
-            border-radius: 5px;
-            border: #dddddd 1px solid;
-        }
+    input {
+        width: 200px;
+        height: 25px;
+        border-radius: 5px;
+        border: #ddd 1px solid;
+        box-shadow: none;
+    }
+    #datePicker {
+        display: inline-block;
     }
 </style>
