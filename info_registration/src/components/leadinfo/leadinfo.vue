@@ -7,7 +7,7 @@
         </label>
         <label class="content_info_email">
             <span>百度邮箱</span>
-            <input type="text" @blur="judgeEmail" id="info_email" placeholder="输入百度邮箱"/>
+            <input type="text" @blur="judgeEmail" id="info_email" placeholder="输入百度邮箱前缀"/>
         </label>
         <div class="content_info_photo">
             <div>带领人照片</div>

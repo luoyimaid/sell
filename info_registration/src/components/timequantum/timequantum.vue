@@ -1,12 +1,8 @@
 <template>
     <select  :value="value">
-        <option>09:00 - 10:00</option>
-        <option>10:00 - 11:00</option>
-        <option>11:00 - 12:00</option>
-        <option>14:00 - 15:00</option>
-        <option>15:00 - 16:00</option>
-        <option>16:00 - 17:00</option>
-        <option>17:00 - 18:00</option>
+        <option>10:30 - 12:00</option>
+        <option>14:00 - 15:30</option>
+        <option>15:30 - 17:00</option>
     </select>
 </template>
 
@@ -15,7 +11,7 @@
         props: {
             value: {
                 // type: ShellString,
-                default: '09:00 - 10:00'
+                default: '10:30 - 12:00'
             }
         },
         data() {

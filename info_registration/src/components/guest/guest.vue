@@ -13,8 +13,8 @@
             <guest-info @onLoadName="onLoadName" @onLoadCall="onLoadCall" @onLoadLevel="onLoadLevel" @onLoadImage="onLoadImage"></guest-info>
             <component :is="item.component" v-for="item in items"></component>
         </div>
-        <div class="content_info_add" @click="addContentInfo('guest-info')">添加主宾+</div>
-        <select-info></select-info>
+        <!--<div class="content_info_add" @click="addContentInfo('guest-info')">添加主宾+</div>-->
+        <!--<select-info></select-info>-->
         <input type="button" value="提交" @click="submitGuestInfo"  class="submit_guest_info"/>
         <hr id="hr"/>
         <guest-list :list="list"></guest-list>
@@ -23,29 +23,12 @@
 
 <script>
     let date = new Date();
+    import pinyin from 'js-pinyin'
     import md5 from 'js-md5';
     import axios from 'axios'
     import guestInfo from '@/components/guestinfo/guestinfo.vue';
     import selectInfo from '@/components/selectinfo/selectinfo.vue';
     import guestList from '@/components/guestlist/guestlist.vue';
-
-    // 随机生成十位数字，字母组合字符
-    function randomWord(randomFlag, min, max){
-        var str = "",
-            range = min,
-            pos,
-            arr = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-
-        // 随机产生
-        if(randomFlag){
-            range = Math.round(Math.random() * (max-min)) + min;
-        }
-        for(var i=0; i<range; i++){
-            pos = Math.round(Math.random() * (arr.length-1));
-            str += arr[pos];
-        }
-        return str;
-    }
 
     // 加0操作
     function addZero(num){
@@ -71,7 +54,9 @@
         formData.append('salt', random);
         formData.append('timestamp', timeTamp);
         formData.append('sign', md5('login_name' + 'admin' + 'salt' + random + 'timestamp' + timeTamp + 'robokit123#'));
-
+        // console.log(timeTamp);
+        // console.log(random);
+        // console.log(md5('login_name' + 'admin' + 'salt' + random + 'timestamp' + timeTamp + 'robokit123#'));
         return formData;
     }
 
@@ -88,20 +73,7 @@
                 guest_name: '',
                 guest_call: '',
                 guest_level: '',
-                list: [
-                    // {
-                    //     uid: 1,
-                    //     name: '习近平',
-                    //     prefer_name: '习主席',
-                    //     rank_level: 1
-                    // },
-                    // {
-                    //     uid: 2,
-                    //     name: '罗怡',
-                    //     prefer_name: '罗可爱',
-                    //     rank_level: 2
-                    // }
-                ],
+                list: [],
             }
         },
         methods: {
@@ -132,12 +104,13 @@
             onLoadImage: function({image}) {
                 this.image = image;
                 console.log(this.image);
+                // console.log(convertBase64UrlToBlob(this.image));
             },
             // 获取主宾信息列表
             getGuestInfo: function () {
                 let formData = publicFormData();
                 formData.append('req', 'face_verify_list_user');
-                axios.post('http://10.155.45.32:8080/durobot/guestface', formData).then(resp => {
+                axios.post('http://10.155.45.32:8081/durobot/guestface', formData).then(resp => {
                     this.list = Object.assign([], resp.data.data);
                     console.log(resp.data);
                     console.log(this.list);
@@ -147,28 +120,32 @@
             },
             // 点击提交时新增用户
             submitGuestInfo () {
+                let that = this;
+                function randomWord(){
+                    // pinyin.setOptions({checkPolyphone: false, charCase: 0});
+                    let id = pinyin.getFullChars(that.guest_name);
+
+                    return 'id_' + id.toLowerCase();
+                }
+
                 // 新增用户请求时的参数
-                let id = randomWord(false,10);
+                let id = randomWord();
                 let addFormData = publicFormData();
                 addFormData.append('req', 'face_verify_add_user_file');
-                addFormData.append('image', this.image);
+                addFormData.append('image',that.image);
                 addFormData.append('id',id);
                 addFormData.append('name', this.guest_name);
                 addFormData.append('prefer_name', this.guest_call);
                 addFormData.append('rank_level', this.guest_level);
+                // console.log(this.image,convertBase64UrlToBlob(this.image));
 
-                // this.list.push({
-                //     uid: id,
-                //     name: this.guest_name,
-                //     prefer_name: this.guest_call,
-                //     rank_level: this.guest_level,
-                // });
                 // 请求新增用户
-                axios.post('http://10.155.45.32:8080/durobot/guestface', addFormData).then(resp => {
+                axios.post('http://10.155.45.32:8081/durobot/guestface', addFormData).then(resp => {
                     console.log(resp.data);
                     // 将输入信息添加到列表
                     this.list.push({
                         uid: id,
+                        image: this.image,
                         name: this.guest_name,
                         prefer_name: this.guest_call,
                         rank_level: this.guest_level,
@@ -244,8 +221,8 @@
             border-radius: 5px;
             border: none;
             cursor: pointer;
-            margin-top: 150px;
-            margin-left: -550px;
+            margin-top: 100px;
+            /*<!--margin-left: -550px;-->*/
             /*margin-bottom: 50px;*/
         }
         hr {

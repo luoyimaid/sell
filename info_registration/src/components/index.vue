@@ -22,13 +22,13 @@
                 <component :is="item.component" :number="num" v-for="item in items"></component>
             </div>
         </div>
-        <div class="content_info_add" @click="addContentInfo('lead-info')">添加带领人+</div>
-        <div class="lead_info" style="display: none;" id="to_guest_info">
-            <div class="aside_info">
-                <div>4 主宾打招呼功能信息登记</div>
-            </div>
-            <div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>
-        </div>
+        <!--<div class="content_info_add" @click="addContentInfo('lead-info')">添加带领人+</div>-->
+        <!--<div class="lead_info" style="display: none;" id="to_guest_info">-->
+            <!--<div class="aside_info">-->
+                <!--<div>4 主宾打招呼功能信息登记</div>-->
+            <!--</div>-->
+            <!--<div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>-->
+        <!--</div>-->
         <input type="submit" value="提交" class="lead_info_submit" @click="submitLeadInfo"/>
         <hr style="margin-bottom: 100px;" id="hr"/>
         <lead-list :list="list"></lead-list>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    // let i = 1;
+    let i = 1;
     let date = new Date();
     import md5 from 'js-md5';
     import axios from 'axios'
@@ -118,10 +118,10 @@
         data() {
             return {
                 items: [],
-                num: 2,
+                num: i,
                 date_value: '',
                 list: [],
-                time_option: '09:00 - 10:00',
+                time_option: '10:30 - 12:00',
                 name: '',
                 email: ''
             }
@@ -132,13 +132,13 @@
                 let anchor = this.$el.querySelector(selector);
                 document.documentElement.scrollTop = anchor.offsetTop
             },
-            // 添加主宾信息
+            // 添加带领人信息
             addContentInfo: function (name) {
                 this.items.push({
                     component: name,
                 });
-                // this.num = this.number[i];
-                // i++;
+                i++;
+                this.num = i;
             },
             // 点击'立即前往'去往主宾信息登录界面
             clickToGuest: function() {
@@ -171,10 +171,11 @@
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
                     for (let i = 0; i < resp.data.data.length; i++) {
-                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));
                         this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
+                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));
+                        // this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
                     }
-                    console.log(this.list);
+                    // console.log(this.list);
                 }).catch(err => {
                     console.log(err);
                 })

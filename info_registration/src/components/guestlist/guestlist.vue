@@ -105,7 +105,7 @@
             deleteUserInfo: function (index) {
                 let formData = publicFormData();
                 formData.append('req', 'face_verify_delete_user');
-                formData.append('id',this.list[index].id);
+                formData.append('id',this.list[index].uid);
                 axios.post('http://10.155.45.32:8081/durobot/guestface',formData).then(resp => {
                     console.log(resp.data);
                     // 删除用户
@@ -113,7 +113,6 @@
                 }).catch(err => {
                     console.log(err);
                 });
-                // this.list.splice(index, 1);
             },
             // 查看&编辑弹窗，确认修改
             editConfirm: function () {

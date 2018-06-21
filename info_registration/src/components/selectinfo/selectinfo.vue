@@ -15,10 +15,24 @@
             </select>
         </div>
         <div class="check_time">
-            <span>开始时间</span><input type="datetime-local" value="" id="start_time"/>
+            <span>开始时间</span>
+            <!--<input type="datetime-local" value="" id="start_time"/>-->
+            <el-date-picker
+                v-model="value1"
+                type="datetime"
+                placeholder="选择日期时间"
+                default-time="12:00:00">
+            </el-date-picker>
         </div>
         <div class="check_time">
-            <span>结束时间</span><input type="datetime-local" value="" id="end_time"/>
+            <span>结束时间</span>
+            <!--<input type="datetime-local" value="" id="end_time"/>-->
+            <el-date-picker
+                v-model="value2"
+                type="datetime"
+                placeholder="选择日期时间"
+                default-time="12:00:00">
+            </el-date-picker>
         </div>
     </div>
 </template>
@@ -33,23 +47,13 @@
     export  default {
         data () {
             return {
-                gender: ''
+                gender: '',
+                value1: '',
+                value2: ''
             }
         },
         mounted () {
-            // 初始化开始及结束时间
-            function initTime(now) {
-                let year = now.getFullYear();
-                let month = now.getMonth() + 1;
-                let date = now.getDate();
-                let hour = now.getHours();
-                let minute = now.getMinutes();
-                let second = now.getSeconds();
-                return year + "-" + addZero(month) + "-" + addZero(date) + "T" + addZero(hour) + ":" + addZero(minute) + ":" + addZero(second);
-            }
-            document.getElementById('start_time').value = initTime(date);
-            document.getElementById('end_time').value = initTime(date);
-            console.log(initTime(date));
+
         }
     }
 </script>

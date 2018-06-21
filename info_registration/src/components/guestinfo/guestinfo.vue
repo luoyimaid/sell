@@ -17,13 +17,24 @@
             <div style="width: 120px;">上传照片</div>
             <div>
                 <a href="javascript:;" class="file">选择文件
-                    <input type="file" name="" id="file" @change="selectImage" style="display: inline-block;">
+                    <input type="file" name="" id="file" accept="image/png,image/gif,image/jpeg" @change="selectImage" style="display: inline-block;">
                 </a>
                 <!--<input type="file" onchange="selectImage(this);" class="click_upload" style="display: inline-block;"/>-->
                 <div class="preview_photo">
-                    <img id="image" src="@/assets/logo.png"/>
+                    <img id="image" src="@/assets/demo.jpeg"/>
                 </div>
                 <div id="photo_name" style="text-align: center;">xxx.png</div>
+                <!--<el-upload-->
+                    <!--class="upload-demo"-->
+                    <!--action="https://jsonplaceholder.typicode.com/posts/"-->
+                    <!--:on-preview="handlePreview"-->
+                    <!--:on-remove="handleRemove"-->
+                    <!--:on-change="handleChange"-->
+                    <!--:file-list="fileList2"-->
+                    <!--list-type="picture">-->
+                    <!--<el-button size="small" type="primary" @click="loadImage">点击上传</el-button>-->
+                    <!--<div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>-->
+                <!--</el-upload>-->
             </div>
         </div>
     </div>
@@ -37,7 +48,9 @@
                 image: '',
                 guest_name: '',
                 guest_call: '',
-                guest_level: ''
+                guest_level: '',
+                fileList2: [{name: 'demo.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
+
             }
         },
         methods: {
@@ -65,22 +78,48 @@
                 let level = document.getElementById('guest_level').value;
                 this.$emit('onLoadLevel',{level:level});
             },
-            selectImage: function() {
+            handleRemove(file, fileList) {
+                console.log(file, fileList);
+            },
+            handlePreview(file) {
+                console.log(file);
+            },
+            handleChange(file){
+                this.image = file.url;
+                // console.l
+                console.log(file);
+            },
+            // loadImage(){
+            //     this.fileList2.pop();
+            //     // console.log(this.fileList2);
+            // },
+            selectImage: function(evt) {
                 let that = this;
                 let file = document.getElementById('file');
+                // let newImage = evt.target.files[0];
+                this.image = file.files[0];
+                // console.log(this.image);
+                this.$emit('onLoadImage',{image:this.image});
+
+                // let file = document.getElementById('file');
                 if(!file.files || !file.files[0]){
                     return;
                 }
                 let reader = new FileReader();
                 reader.onload = function(evt){
                     document.getElementById('image').src = evt.target.result;
-                    that.image = evt.target.result;
+                    // that.image = evt.target.result;
                     document.getElementById('photo_name').innerHTML = file.files[0].name;
-                    console.log(evt.target);
+                    // console.log(evt.target);
+                    that.$emit('onLoadImage',{image:that.image});
+                    // console.log(that.image);
                 };
+                // reader.readAsBinaryString(file.files[0]);
                 reader.readAsDataURL(file.files[0]);
-                this.$emit('onLoadImage',{image:this.image});
             }
+        },
+        updated() {
+
         }
     }
 </script>
