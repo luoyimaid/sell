@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="cd6e9e76-dcd1-43e8-9f91-2b1a7e2aa988" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/info_registration/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/info_registration/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/info_registration/src/components/guest/guest.vue" beforeDir="false" afterPath="$PROJECT_DIR$/info_registration/src/components/guest/guest.vue" afterDir="false" />
-    </list>
+    <list default="true" id="cd6e9e76-dcd1-43e8-9f91-2b1a7e2aa988" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -20,7 +17,7 @@
       <file leaf-file-name="guest.vue" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/info_registration/src/components/guest/guest.vue">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="235">
+            <state relative-caret-position="1373">
               <caret line="127" column="51" selection-start-line="127" selection-start-column="51" selection-end-line="127" selection-end-column="51" />
               <folding>
                 <element signature="e#1017#1047#0" expanded="true" />
@@ -1801,6 +1798,69 @@
               <item name="fework" type="b2602c69:ProjectViewProjectNode" />
               <item name="fework" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="css" type="462c0819:PsiDirectoryNode" />
+              <item name="app.aa9b761162c37836b1483f2ec3098be0.css" type="620a8d5e:NestingTreeNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="fonts" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="fework" type="b2602c69:ProjectViewProjectNode" />
+              <item name="fework" type="462c0819:PsiDirectoryNode" />
+              <item name="output" type="462c0819:PsiDirectoryNode" />
+              <item name="internal" type="462c0819:PsiDirectoryNode" />
+              <item name="guider" type="462c0819:PsiDirectoryNode" />
+              <item name="static" type="462c0819:PsiDirectoryNode" />
+              <item name="js" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -1860,12 +1920,12 @@
       <workItem from="1525692213454" duration="266000" />
       <workItem from="1525692515274" duration="90000" />
       <workItem from="1525692771663" duration="296000" />
-      <workItem from="1527595394610" duration="154034000" />
+      <workItem from="1527595394610" duration="154980000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="183113000" />
+    <option name="totallyTimeSpent" value="184059000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
@@ -2303,7 +2363,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/info_registration/src/components/guest/guest.vue">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="235">
+        <state relative-caret-position="1373">
           <caret line="127" column="51" selection-start-line="127" selection-start-column="51" selection-end-line="127" selection-end-column="51" />
           <folding>
             <element signature="e#1017#1047#0" expanded="true" />
