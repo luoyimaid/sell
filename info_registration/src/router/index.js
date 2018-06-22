@@ -7,8 +7,8 @@
  **/
 import Vue from 'vue';
 import Router from 'vue-router';
-import index from '../components/index';
-import Guest from '../components/guest/guest';
+import index from '@/components/index';
+import Guest from '@/components/guest/guest';
 
 Vue.use(Router);
 

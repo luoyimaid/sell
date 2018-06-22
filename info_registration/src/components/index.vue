@@ -23,12 +23,12 @@
             </div>
         </div>
         <!--<div class="content_info_add" @click="addContentInfo('lead-info')">添加带领人+</div>-->
-        <!--<div class="lead_info" style="display: none;" id="to_guest_info">-->
-            <!--<div class="aside_info">-->
-                <!--<div>4 主宾打招呼功能信息登记</div>-->
-            <!--</div>-->
-            <!--<div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>-->
-        <!--</div>-->
+        <div class="lead_info" style="display: none;" id="to_guest_info">
+            <div class="aside_info">
+                <div>4 主宾打招呼功能信息登记</div>
+            </div>
+            <div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>
+        </div>
         <input type="submit" value="提交" class="lead_info_submit" @click="submitLeadInfo"/>
         <hr style="margin-bottom: 100px;" id="hr"/>
         <lead-list :list="list"></lead-list>
