@@ -2,7 +2,7 @@
     <div class="content">
         <div class="title">百度大厦展厅小度讲解信息登记</div>
         <a href="javascript:void(0)" @click="goAnchor('#hr')">
-            <input type="button" value="查看已添加信息" class="already_over"/>
+            <input type="button" value="查看已添加信息" class="already_over" style="background-color: dodgerblue;"/>
         </a>
         <div class="selectDate">
             <span>1 选择开始参观日期:</span>
@@ -23,20 +23,21 @@
             </div>
         </div>
         <!--<div class="content_info_add" @click="addContentInfo('lead-info')">添加带领人+</div>-->
-        <div class="lead_info" style="display: none;" id="to_guest_info">
-            <div class="aside_info">
-                <div>4 主宾打招呼功能信息登记</div>
-            </div>
-            <div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>
-        </div>
         <input type="submit" value="提交" class="lead_info_submit" @click="submitLeadInfo"/>
         <hr style="margin-bottom: 100px;" id="hr"/>
         <lead-list :list="list"></lead-list>
+        <div class="lead_info" id="to_guest_info">
+            <a class="aside_info">
+                <div style="color: dodgerblue; cursor: pointer; text-decoration: underline;" @click="clickToGuest">主宾打招呼功能信息登记</div>
+            </a>
+            <!--<div style="color: dodgerblue; cursor: pointer;" @click="clickToGuest">点击前往</div>-->
+        </div>
     </div>
 </template>
 
 <script>
     let i = 1;
+    let btn = true;
     let date = new Date();
     import md5 from 'js-md5';
     import axios from 'axios'
@@ -160,6 +161,15 @@
                 this.email = email;
                 console.log(this.email);
             },
+            judge: function(){
+                let time_quantum = document.getElementById('timeQuantum');
+                let submit = document.getElementsByClassName('lead_info_submit')[0];
+                if(this.email && this.name && this.date_value && time_quantum.value){
+                    submit.style.backgroundColor = 'dodgerblue';
+                }else{
+                    submit.style.backgroundColor = '#ccc';
+                }
+            },
             // 获取带领人信息
             getLeadInfo: function() {
                 // 发送请求的数据格式是 form-data 格式
@@ -168,14 +178,18 @@
                 // 用post请求数据
                 axios.post('http://10.155.45.32:8081/durobot/guiderinfo', formData).then(resp => {
                     this.list = Object.assign([], resp.data.data);
+                    for (let i = 0; i < this.list.length; i++){
+                        if(new Date().getTime() > resp.data.data[i].end_timestamp){
+                            this.list.splice(i,1);
+                            i --;
+                        }
+                    }
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
-                    for (let i = 0; i < resp.data.data.length; i++) {
+                    for (let i = 0; i < this.list.length; i++) {
                         this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
                         this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));
-                        // this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
                     }
-                    // console.log(this.list);
                 }).catch(err => {
                     console.log(err);
                 })
@@ -184,7 +198,6 @@
             submitLeadInfo () {
                 let time_quantum = document.getElementById('timeQuantum');
                 let lead_info = document.getElementById('leadInfo');
-                let guestInfo = document.getElementById('to_guest_info');
 
                 function start(date,time) {
                     let start_time = time.substr(0,5);
@@ -208,25 +221,55 @@
                 addFormData.append('start_timestamp', new Date(start(this.date_value,time_quantum.value)).getTime());
                 addFormData.append('end_timestamp', new Date(end(this.date_value,time_quantum.value)).getTime());
 
+                // 判断用户邮箱是否重复，重复时，删除之前的带领人
+                for(let i = 0; i < this.list.length; i++){
+                    if(this.list[i].email === this.email){
+                        let deleteData = publicFormData();
+                        deleteData.append('req', 'delete');
+                        deleteData.append('visit_id',this.list[i].visit_id);
+                        axios.post('http://10.155.45.32:8081/durobot/guiderinfo',deleteData).then(resp => {
+                            console.log(resp.data);
+                            this.list.splice(i, 1);
+                        }).catch(err => {
+                            console.log(err);
+                        });
+                    }
+                }
+
                 // 请求新增用户
-                axios.post('http://10.155.45.32:8081/durobot/guiderinfo', addFormData).then(resp => {
-                    console.log(resp.data);
-                    // 将输入信息添加到列表
-                    this.list.push({
-                        visit_id: randomWord(false,10),
-                        name: this.name,
-                        email: this.email,
-                        start_timestamp: this.date_value,
-                        end_timestamp: time_quantum.value
+                if(this.email && this.name && this.date_value && time_quantum.value){
+                    for(let i = 0; i < this.list.length; i++){
+                        if(this.date_value === this.list[i].start_timestamp && time_quantum.value === this.list[i].end_timestamp){
+                            alert("该时间段已被预约，请确认！");
+                            window.location.reload();
+                        }
+                    }
+                    axios.post('http://10.155.45.32:8081/durobot/guiderinfo', addFormData).then(resp => {
+                        console.log(resp.data);
+                        // 将输入信息添加到列表
+                        this.list.push({
+                            visit_id: randomWord(false,10),
+                            name: this.name,
+                            email: this.email,
+                            start_timestamp: this.date_value,
+                            end_timestamp: time_quantum.value
+                        });
+                        window.location.reload();
+                        let anchor = this.$el.querySelector("hr");
+                        document.documentElement.scrollTop = anchor.offsetTop;
+                    }).catch(err => {
+                        console.log(err);
                     });
-                }).catch(err => {
-                    console.log(err);
-                });
-                guestInfo.style.display = 'flex';
+                } else {
+                    alert("请将输入信息补充完整！");
+                }
             }
         },
         created () {
             this.getLeadInfo();
+        },
+        watch: {
+            'email':'judge'
         }
     }
 </script>
@@ -252,7 +295,7 @@
             width: 100px;
             height: 30px;
             font-size: 12px;
-            background-color: dodgerblue;
+            background-color: #ccc;
             color: #fff;
             border-radius: 5px;
             border: none;

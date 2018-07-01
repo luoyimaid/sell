@@ -1,7 +1,7 @@
 <template>
     <div class="container">
         <div class="userInfo">
-            <table width="100%" border="1px solid white">
+            <table width="800" border="1px solid white">
                 <thead>
                 <tr>
                     <td>序号</td>

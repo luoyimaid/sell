@@ -7,6 +7,8 @@
                     <td>序号</td>
                     <td>姓名</td>
                     <td>称呼</td>
+                    <td>等级</td>
+                    <td>照片</td>
                     <td>操作</td>
                 </tr>
                 </thead>
@@ -15,6 +17,8 @@
                     <td>{{item.uid}}</td>
                     <td>{{item.name}}</td>
                     <td>{{item.prefer_name}}</td>
+                    <td>{{item.rank_level}}</td>
+                    <td>{{item.image}}</td>
                     <td>
                         <input type="button" value="查看&编辑" @click="editUserInfo(index)"/>
                         <input type="button" value="删除" @click="deleteUserInfo(index)" style="width: 60px;"/>
@@ -39,6 +43,11 @@
             <div>
                 <span>4 主宾级别</span>
                 <input type="text" class="setUser"/>
+            </div>
+            <div>
+                <span>4 主宾照片</span>
+                <!--<input type="file" class="setUser"/>-->
+                <img src="" class="setUser"/>
             </div>
             <div>
                 <input type="button" value="确定" class="addButton" @click="editConfirm"/>
@@ -98,6 +107,7 @@
                 set_user_info[1].value = this.list[index].name;
                 set_user_info[2].value = this.list[index].prefer_name;
                 set_user_info[3].value = this.list[index].rank_level;
+                set_user_info[4].src = this.list[index].image;
                 let edit_display = document.getElementById('editPage');
                 edit_display.style.display = 'block';
             },
@@ -133,8 +143,9 @@
     }
     .userInfo {
         margin-bottom: 100px;
+        margin-left: -100px;
         table {
-            width: 600px;
+            width: 800px;
             border: none;
             border-collapse: collapse;
             row-span: 0;

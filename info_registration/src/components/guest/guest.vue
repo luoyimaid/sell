@@ -109,9 +109,23 @@
             // 获取主宾信息列表
             getGuestInfo: function () {
                 let formData = publicFormData();
+                let compare = function(prop){
+                    return function(obj1,obj2){
+                        let rank1 = obj1[prop];
+                        let rank2 = obj2[prop];
+                        if (rank1 < rank2) {
+                            return 1;
+                        } else if (rank1 > rank2) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                };
                 formData.append('req', 'face_verify_list_user');
                 axios.post('http://10.155.45.32:8081/durobot/guestface', formData).then(resp => {
                     this.list = Object.assign([], resp.data.data);
+                    this.list.sort(compare("rank_level"));
                     console.log(resp.data);
                     console.log(this.list);
                 }).catch(err => {
@@ -143,14 +157,18 @@
                 axios.post('http://10.155.45.32:8081/durobot/guestface', addFormData).then(resp => {
                     console.log(resp.data);
                     // 将输入信息添加到列表
-                    this.list.push({
-                        uid: id,
-                        image: this.image,
-                        name: this.guest_name,
-                        prefer_name: this.guest_call,
-                        rank_level: this.guest_level,
-                    });
+                    if(this.image && this.id && this.guest_name && this.guest_call && this.guest_level) {
+                        this.list.push({
+                            uid: id,
+                            image: this.image,
+                            name: this.guest_name,
+                            prefer_name: this.guest_call,
+                            rank_level: this.guest_level,
+                        });
+                    }
+                    window.location.reload();
                 }).catch(err => {
+                    // window.location.reload();
                     console.log(err);
                 });
             }
