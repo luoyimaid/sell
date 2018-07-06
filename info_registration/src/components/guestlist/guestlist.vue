@@ -8,8 +8,8 @@
                     <td>姓名</td>
                     <td>称呼</td>
                     <td>等级</td>
-                    <td>照片</td>
-                    <td>操作</td>
+                    <!--<td>照片</td>-->
+                    <td>操作<div style="color: #999; font-size: 12px;">(如需修改，请删除后重新添加)</div></td>
                 </tr>
                 </thead>
                 <tbody>
@@ -18,9 +18,9 @@
                     <td>{{item.name}}</td>
                     <td>{{item.prefer_name}}</td>
                     <td>{{item.rank_level}}</td>
-                    <td>{{item.image}}</td>
+                    <!--<td>{{item.image}}</td>-->
                     <td>
-                        <input type="button" value="查看&编辑" @click="editUserInfo(index)"/>
+                        <!--<input type="button" value="查看&编辑" @click="editUserInfo(index)"/>-->
                         <input type="button" value="删除" @click="deleteUserInfo(index)" style="width: 60px;"/>
                     </td>
                 </tr>
@@ -43,11 +43,6 @@
             <div>
                 <span>4 主宾级别</span>
                 <input type="text" class="setUser"/>
-            </div>
-            <div>
-                <span>4 主宾照片</span>
-                <!--<input type="file" class="setUser"/>-->
-                <img src="" class="setUser"/>
             </div>
             <div>
                 <input type="button" value="确定" class="addButton" @click="editConfirm"/>

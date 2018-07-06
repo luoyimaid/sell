@@ -3,7 +3,7 @@
         <div class="content_info_title">带领人{{number}}：</div>
         <label class="content_info_name">
             <span>姓名</span>
-            <input type="text" @blur="judgeName" id="info_name" placeholder="输入中文或英文名"/>
+            <input type="text" @blur="judgeName" id="info_name" placeholder="输入中文全名或英文名"/>
         </label>
         <label class="content_info_email">
             <span>百度邮箱</span>

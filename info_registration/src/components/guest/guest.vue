@@ -124,10 +124,12 @@
                 };
                 formData.append('req', 'face_verify_list_user');
                 axios.post('http://10.155.45.32:8081/durobot/guestface', formData).then(resp => {
-                    this.list = Object.assign([], resp.data.data);
-                    this.list.sort(compare("rank_level"));
-                    console.log(resp.data);
-                    console.log(this.list);
+                    // console.log(resp.data);
+                    let str = resp.data.slice(15);
+                    let data = JSON.parse(str);
+                    this.list = Object.assign([],data.data);
+                    this.list.sort(compare('rank_level'));
+                    console.log(data);
                 }).catch(err => {
                     console.log(err);
                 })
@@ -138,7 +140,6 @@
                 function randomWord(){
                     // pinyin.setOptions({checkPolyphone: false, charCase: 0});
                     let id = pinyin.getFullChars(that.guest_name);
-
                     return 'id_' + id.toLowerCase();
                 }
 
@@ -151,13 +152,12 @@
                 addFormData.append('name', this.guest_name);
                 addFormData.append('prefer_name', this.guest_call);
                 addFormData.append('rank_level', this.guest_level);
-                // console.log(this.image,convertBase64UrlToBlob(this.image));
 
                 // 请求新增用户
                 axios.post('http://10.155.45.32:8081/durobot/guestface', addFormData).then(resp => {
                     console.log(resp.data);
                     // 将输入信息添加到列表
-                    if(this.image && this.id && this.guest_name && this.guest_call && this.guest_level) {
+                    if(this.image && this.guest_name && this.guest_call && this.guest_level) {
                         this.list.push({
                             uid: id,
                             image: this.image,
@@ -165,8 +165,12 @@
                             prefer_name: this.guest_call,
                             rank_level: this.guest_level,
                         });
+                    } else {
+                        alert("请将添加信息补充完整！")
                     }
                     window.location.reload();
+                    let anchor = this.$el.querySelector("#hr");
+                    document.documentElement.scrollTop = anchor.offsetTop
                 }).catch(err => {
                     // window.location.reload();
                     console.log(err);
