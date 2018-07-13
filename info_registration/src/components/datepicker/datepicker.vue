@@ -1,6 +1,6 @@
 <template>
     <div class="selectDate">
-        <date-picker @change="localTimechange" :date="startTime" :option="option" :limit="limit" id="select_date"></date-picker>
+        <date-picker v-bind:value="value" @change="localTimechange" :date="startTime" :option="option" :limit="limit" id="select_date"></date-picker>
     </div>
 </template>
 
@@ -28,8 +28,8 @@
         },
         data() {
             return {
-                // value: getLocalTime(date),
-                value: '',
+                value: getLocalTime(date),
+                // value: '',
                 startTime: {
                     time: ""
                 },
@@ -79,6 +79,8 @@
         },
         mounted () {
             this.startTime.time = getLocalTime(date);
+            this.$emit('datePickerEvent', {value: this.value});
+            // console.log(this.value);
         }
     }
 </script>

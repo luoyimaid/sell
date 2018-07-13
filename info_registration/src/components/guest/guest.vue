@@ -13,8 +13,6 @@
             <guest-info @onLoadName="onLoadName" @onLoadCall="onLoadCall" @onLoadLevel="onLoadLevel" @onLoadImage="onLoadImage"></guest-info>
             <component :is="item.component" v-for="item in items"></component>
         </div>
-        <!--<div class="content_info_add" @click="addContentInfo('guest-info')">添加主宾+</div>-->
-        <!--<select-info></select-info>-->
         <input type="button" value="提交" @click="submitGuestInfo"  class="submit_guest_info"/>
         <hr id="hr"/>
         <guest-list :list="list"></guest-list>
@@ -48,15 +46,6 @@
     // 封装加密请求必须的参数
     function publicFormData(){
         let formData = new FormData();
-        let random = randomNum(10);
-        let timeTamp = date.getTime();
-        formData.append('login_name', 'admin');
-        formData.append('salt', random);
-        formData.append('timestamp', timeTamp);
-        formData.append('sign', md5('login_name' + 'admin' + 'salt' + random + 'timestamp' + timeTamp + 'robokit123#'));
-        // console.log(timeTamp);
-        // console.log(random);
-        // console.log(md5('login_name' + 'admin' + 'salt' + random + 'timestamp' + timeTamp + 'robokit123#'));
         return formData;
     }
 
@@ -109,6 +98,7 @@
             // 获取主宾信息列表
             getGuestInfo: function () {
                 let formData = publicFormData();
+                // 按照主宾级别大小进行排序，级别大着在前
                 let compare = function(prop){
                     return function(obj1,obj2){
                         let rank1 = obj1[prop];
@@ -122,6 +112,7 @@
                         }
                     }
                 };
+
                 formData.append('req', 'face_verify_list_user');
                 axios.post('http://10.155.45.32:8081/durobot/guestface', formData).then(resp => {
                     // console.log(resp.data);
@@ -172,7 +163,6 @@
                     let anchor = this.$el.querySelector("#hr");
                     document.documentElement.scrollTop = anchor.offsetTop
                 }).catch(err => {
-                    // window.location.reload();
                     console.log(err);
                 });
             }

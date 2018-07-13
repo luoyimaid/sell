@@ -11,7 +11,7 @@
         </label>
         <label class="content_info_name">
             <span>级别</span>
-            <input type="text" value="" id="guest_level" @blur="judgeGuestLevel" placeholder="L 10"/>
+            <input type="text" value="" id="guest_level" @blur="judgeGuestLevel" placeholder="1~100以内的数字"/>
         </label>
         <div class="content_info_photo">
             <div style="width: 120px;">上传照片</div>
@@ -20,7 +20,6 @@
                     <span id="choose_file">选择文件</span>
                     <input type="file" name="" id="file" accept="image/png,image/gif,image/jpeg" @change="selectImage" style="display: inline-block;">
                 </a>
-                <!--<input type="file" onchange="selectImage(this);" class="click_upload" style="display: inline-block;"/>-->
                 <div class="preview_photo">
                     <img id="image" src="@/assets/demo.jpeg"/>
                 </div>
@@ -39,8 +38,6 @@
                 guest_name: '',
                 guest_call: '',
                 guest_level: '',
-                fileList2: [{name: 'demo.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}]
-
             }
         },
         methods: {
@@ -68,17 +65,6 @@
                 let level = document.getElementById('guest_level').value;
                 this.$emit('onLoadLevel',{level:level});
             },
-            handleRemove(file, fileList) {
-                console.log(file, fileList);
-            },
-            handlePreview(file) {
-                console.log(file);
-            },
-            handleChange(file){
-                this.image = file.url;
-                // console.l
-                console.log(file);
-            },
             selectImage: function() {
                 let that = this;
                 let file = document.getElementById('file');
@@ -97,9 +83,6 @@
                 reader.readAsDataURL(file.files[0]);
                 document.getElementById("choose_file").innerHTML = "重新选择";
             }
-        },
-        updated() {
-
         }
     }
 </script>
