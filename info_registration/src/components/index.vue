@@ -188,8 +188,8 @@
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
                     for (let i = 0; i < this.list.length; i++) {
-                        this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
-                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));
+                        this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp*1000),new Date(resp.data.data[i].end_timestamp*1000));
+                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp*1000));
                     }
                 }).catch(err => {
                     console.log(err);
@@ -211,16 +211,17 @@
                 }
 
                 // console.log(this.date_value,time_quantum.value);
-                // console.log(Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString());
-                // console.log(Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString());
-
+                // console.log(Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000));
+                // console.log(Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000));
                 // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('email', this.email);
                 addFormData.append('name', this.name);
-                addFormData.append('start_timestamp', Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString());
-                addFormData.append('end_timestamp', Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString());
+                addFormData.append('start_timestamp',Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000));
+                // Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString()
+                addFormData.append('end_timestamp',Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000));
+                // Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString()
 
                 let that = this;
                 // 判断用户邮箱和姓名是否重复，重复时，删除之前的带领人
