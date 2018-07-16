@@ -158,10 +158,26 @@
                 // 发送请求的数据格式是 form-data 格式
                 let formData = publicFormData();
                 formData.append('req', 'list');
+                let delFormData = publicFormData();
+                delFormData.append('req', 'delete');
                 // 用post请求数据
                 axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount', formData).then(resp => {
-                    this.list = Object.assign([], resp.data.data);
+                    for (let i = 0; i < resp.data.data.length; i++){
+                        if(resp.data.data[i].end_timestamp < new Date().getTime()){
+                            // delFormData.append('account',resp.data.data[i].account);
+                            // axios.post('http://yq01-rp-nlp-rd0-b33aa.yq01.baidu.com:8080/durobot/v2/controlaccount',delFormData).then(resp => {
+                            //     // 删除用户
+                            //     resp.data.data.splice(i, 1);
+                            //     i --;
+                            // }).catch(err => {
+                            //     console.log(err);
+                            // });
+                            resp.data.data.splice(i, 1);
+                            i --;
+                        }
+                    }
                     console.log(resp.data);
+                    this.list = Object.assign([], resp.data.data);
                     // 将请求到的时间戳转换为普通时间格式
                     for (let i = 0; i < resp.data.data.length; i++) {
                         this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));

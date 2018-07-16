@@ -177,11 +177,12 @@
                 formData.append('req', 'list');
                 // 用post请求数据
                 axios.post('http://10.155.45.32:8081/durobot/guiderinfo', formData).then(resp => {
+                    // console.log(resp.data.data);
                     this.list = Object.assign([], resp.data.data);
                     // for (let i = 0; i < this.list.length; i++){
                     //     if(new Date().getTime() > resp.data.data[i].end_timestamp){
                     //         this.list.splice(i,1);
-                    //         // i = i-1;
+                    //          -- i;
                     //     }
                     // }
                     console.log(resp.data);
@@ -209,55 +210,81 @@
                     return date + ' ' + end_time;
                 }
 
-                console.log(this.date_value,time_quantum.value);
-                console.log(new Date(start(this.date_value,time_quantum.value)).getTime());
-                console.log(new Date(end(this.date_value,time_quantum.value)).getTime());
+                // console.log(this.date_value,time_quantum.value);
+                // console.log(Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString());
+                // console.log(Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString());
 
                 // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('email', this.email);
                 addFormData.append('name', this.name);
-                addFormData.append('start_timestamp', new Date(start(this.date_value,time_quantum.value)).getTime());
-                addFormData.append('end_timestamp', new Date(end(this.date_value,time_quantum.value)).getTime());
+                addFormData.append('start_timestamp', Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString());
+                addFormData.append('end_timestamp', Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString());
 
-                let deleteData = publicFormData();
-                deleteData.append('req', 'delete');
-                deleteData.append('visit_id',this.list[i].visit_id);
                 let that = this;
                 // 判断用户邮箱和姓名是否重复，重复时，删除之前的带领人
-                for(let i = 0; i < that.list.length; i++){
-                    if(that.list[i].email === that.email && that.list[i].name === that.list[i].name){
-                        axios.post('http://10.155.45.32:8081/durobot/guiderinfo',deleteData).then(resp => {
-                            console.log(resp.data);
-                            that.list.splice(i, 1);
-                        }).catch(err => {
-                            console.log(err);
-                        });
-                    }
-                }
-
-                for(let i = 0; i < this.list.length; i++){
-                    if(this.date_value === this.list[i].start_timestamp && time_quantum.value === this.list[i].end_timestamp){
-                        alert("该时间段已被预约，请确认！");
-                        window.location.reload();
-                    }
-                }
+                // for(let i = 0; i < that.list.length; i++){
+                //     if(that.list[i].email === that.email && that.list[i].name === that.list[i].name){
+                //         let deleteData = publicFormData();
+                //         deleteData.append('req', 'delete');
+                //         deleteData.append('visit_id',this.list[i].visit_id);
+                //         axios.post('http://10.155.45.32:8081/durobot/guiderinfo',deleteData).then(resp => {
+                //             console.log(resp.data);
+                //             that.list.splice(i, 1);
+                //         }).catch(err => {
+                //             console.log(err);
+                //         });
+                //     }
+                // }
 
                 // 请求新增用户
                 if(this.email && this.name && this.date_value && time_quantum.value){
+                    for(let i = 0; i < this.list.length; i++){
+                        if(this.date_value === this.list[i].start_timestamp && time_quantum.value === this.list[i].end_timestamp){
+                            // alert("该时间段已被预约，请确认！");
+                            this.$alert('该时间段已被预约，请确认！', '提示：', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: `action: ${ action }`
+                                    });
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    }
                     axios.post('http://10.155.45.32:8081/durobot/guiderinfo', addFormData).then(resp => {
-                        // console.log(resp.data);
+
                         if(typeof resp.data === "string"){
                             let str = resp.data.slice(-76);
                             let data = JSON.parse(str);
                             // console.log(data);
                             if(data.error === 9004){
-                                alert("姓名与邮箱不匹配，请确认！");
+                                // alert("姓名与邮箱不匹配，请确认！");
+                                this.$alert('姓名与邮箱不匹配，请确认！', '提示：', {
+                                    confirmButtonText: '确定',
+                                    callback: action => {
+                                        this.$message({
+                                            type: 'info',
+                                            message: `action: ${ action }`
+                                        });
+                                    }
+                                });
                             }
                         }
                         else if(resp.data.error === 9002){
-                            alert("此员工不存在，请确认！");
+                            // alert("此员工不存在，请确认！");
+                            this.$alert('此员工不存在，请确认！', '提示：', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: `action: ${ action }`
+                                    });
+                                }
+                            });
                         }
                         else {
                             // 将输入信息添加到列表
@@ -268,7 +295,7 @@
                                 start_timestamp: this.date_value,
                                 end_timestamp: time_quantum.value
                             });
-                            window.location.reload();
+                            // window.location.reload();
                             let anchor = this.$el.querySelector("hr");
                             document.documentElement.scrollTop = anchor.offsetTop;
                         }
@@ -291,6 +318,51 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss" scoped>
+    #msg{
+        width:266px;
+        position: fixed;
+        z-index:999;
+        top: 49%;
+        margin-top:-80px;
+        left:50%;
+        margin-left:-133px;
+        background:#fff;
+        box-shadow:5px 5px 8px #999;
+        font-size:17px;
+        color:#666;
+        border:1px solid #f8f8f8;
+        text-align: center;
+        line-height: 2rem;
+        display:inline-block;
+        padding-bottom:20px;
+        border-radius:2px;
+    }
+    #msg_top{
+        background:#f8f8f8;
+        padding:5px 15px 5px 20px;
+        text-align:left;
+    }
+    #msg_top span{
+        font-size:22px;
+        float:right;
+        cursor:pointer;
+    }
+    #msg_cont{
+        padding:15px 20px 20px;
+        text-align:left;
+    }
+    #msg_clear{
+        display:inline-block;
+        color:#fff;
+        padding:1px 15px;
+        background:#8fc31f;
+        border-radius:2px;
+        float:right;
+        margin-right:15px;
+        cursor:pointer;
+    }
+
+
     .content {
         padding: 0 300px 200px;
         input,
