@@ -134,13 +134,13 @@
                 document.documentElement.scrollTop = anchor.offsetTop
             },
             // 添加带领人信息
-            addContentInfo: function (name) {
-                this.items.push({
-                    component: name,
-                });
-                i++;
-                this.num = i;
-            },
+            // addContentInfo: function (name) {
+            //     this.items.push({
+            //         component: name,
+            //     });
+            //     i++;
+            //     this.num = i;
+            // },
             // 点击'立即前往'去往主宾信息登录界面
             clickToGuest: function() {
                 this.$router.push({
@@ -150,6 +150,7 @@
             // 接收date-picker组件传来的值
             receiveDate: function({value}) {
                 this.date_value = value;
+                console.log(this.date_value);
             },
             // 接收leadInfo里的name值
             leadName: function({name}) {
@@ -176,7 +177,7 @@
                 let formData = publicFormData();
                 formData.append('req', 'list');
                 // 用post请求数据
-                axios.post('http://10.155.45.32:8081/durobot/guiderinfo', formData).then(resp => {
+                axios.post('http://10.155.45.32:8080/durobot/guiderinfo', formData).then(resp => {
                     // console.log(resp.data.data);
                     this.list = Object.assign([], resp.data.data);
                     // for (let i = 0; i < this.list.length; i++){
@@ -188,8 +189,8 @@
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
                     for (let i = 0; i < this.list.length; i++) {
-                        this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp*1000),new Date(resp.data.data[i].end_timestamp*1000));
-                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp*1000));
+                        this.list[i].end_timestamp = getTimeQuantum(new Date(resp.data.data[i].start_timestamp),new Date(resp.data.data[i].end_timestamp));
+                        this.list[i].start_timestamp = getLocalTime(new Date(resp.data.data[i].start_timestamp));
                     }
                 }).catch(err => {
                     console.log(err);
@@ -210,17 +211,17 @@
                     return date + ' ' + end_time;
                 }
 
-                // console.log(this.date_value,time_quantum.value);
-                // console.log(Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000));
-                // console.log(Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000));
+                console.log(this.date_value,time_quantum.value);
+                console.log(Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000));
+                console.log(Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000));
                 // 新增用户请求时的参数
                 let addFormData = publicFormData();
                 addFormData.append('req', 'add');
                 addFormData.append('email', this.email);
                 addFormData.append('name', this.name);
-                addFormData.append('start_timestamp',Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000));
+                addFormData.append('start_timestamp',Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()));
                 // Math.round(new Date(start(this.date_value,time_quantum.value)).getTime()/1000).toString()
-                addFormData.append('end_timestamp',Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000));
+                addFormData.append('end_timestamp',Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()));
                 // Math.round(new Date(end(this.date_value,time_quantum.value)).getTime()/1000).toString()
 
                 let that = this;
@@ -256,8 +257,8 @@
                             });
                         }
                     }
-                    axios.post('http://10.155.45.32:8081/durobot/guiderinfo', addFormData).then(resp => {
-
+                    axios.post('http://10.155.45.32:8080/durobot/guiderinfo', addFormData).then(resp => {
+                        console.log(resp.data);
                         if(typeof resp.data === "string"){
                             let str = resp.data.slice(-76);
                             let data = JSON.parse(str);

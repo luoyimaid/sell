@@ -46,6 +46,13 @@
     // 封装加密请求必须的参数
     function publicFormData(){
         let formData = new FormData();
+        let random = randomNum(10);
+        let timeTamp = date.getTime();
+        formData.append('login_name', 'admin');
+        formData.append('salt', random);
+        formData.append('timestamp', timeTamp);
+        formData.append('sign', md5('login_name' + 'admin' + 'salt' + random + 'timestamp' + timeTamp + 'robokit123#'));
+
         return formData;
     }
 
@@ -113,10 +120,12 @@
                     }
                 };
 
-                formData.append('req', 'face_verify_list_user');
-                axios.post('http://10.155.45.32:8081/durobot/guestface', formData).then(resp => {
+                formData.append('req', "face_verify_list_user");
+                axios.post('http://10.155.45.32:8080/durobot/guestface', formData).then(resp => {
                     // console.log(resp.data);
-                    let str = resp.data.slice(15);
+                    // let data = resp.data;
+                    // console.log(typeof resp.data);
+                    let str = resp.data.slice(13);
                     let data = JSON.parse(str);
                     this.list = Object.assign([],data.data);
                     this.list.sort(compare('rank_level'));
@@ -145,7 +154,7 @@
                 addFormData.append('rank_level', this.guest_level);
 
                 // 请求新增用户
-                axios.post('http://10.155.45.32:8081/durobot/guestface', addFormData).then(resp => {
+                axios.post('http://10.155.45.32:8080/durobot/guestface', addFormData).then(resp => {
                     console.log(resp.data);
                     // 将输入信息添加到列表
                     if(this.image && this.guest_name && this.guest_call && this.guest_level) {

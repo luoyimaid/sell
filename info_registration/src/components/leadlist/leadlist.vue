@@ -165,7 +165,7 @@
                 let formData = publicFormData();
                 formData.append('req', 'delete');
                 formData.append('visit_id',this.list[index].visit_id);
-                axios.post('http://10.155.45.32:8081/durobot/guiderinfo',formData).then(resp => {
+                axios.post('http://10.155.45.32:8080/durobot/guiderinfo',formData).then(resp => {
                     console.log(resp.data);
                     // 删除用户
                     this.list.splice(index, 1);
@@ -199,7 +199,7 @@
                 accountFormData.append('visit_id',that.list[that.select].visit_id);
                 accountFormData.append('start_timestamp',new Date(start(set_user_date,set_user_time)).getTime());
                 accountFormData.append('end_timestamp',new Date(end(set_user_date,set_user_time)).getTime());
-                axios.post('http://10.155.45.32:8081/durobot//durobot/guiderinfo',accountFormData).then(resp =>{
+                axios.post('http://10.155.45.32:8080/durobot//durobot/guiderinfo',accountFormData).then(resp =>{
                     console.log(resp.data);
                     that.list[that.select].visit_id = set_user_id;
                     that.list[that.select].start_timestamp = set_user_date;

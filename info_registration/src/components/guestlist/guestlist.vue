@@ -111,7 +111,7 @@
                 let formData = publicFormData();
                 formData.append('req', 'face_verify_delete_user');
                 formData.append('id',this.list[index].uid);
-                axios.post('http://10.155.45.32:8081/durobot/guestface',formData).then(resp => {
+                axios.post('http://10.155.45.32:8080/durobot/guestface',formData).then(resp => {
                     console.log(resp.data);
                     // 删除用户
                     this.list.splice(index, 1);
