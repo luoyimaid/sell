@@ -13,17 +13,17 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(item,index) in list">
-                    <td>{{item.visit_id}}</td>
-                    <td>{{item.start_timestamp}}</td>
-                    <td>{{item.end_timestamp}}</td>
-                    <td>{{item.name}}</td>
-                    <td>{{item.email}}</td>
-                    <td>
-                        <input type="button" value="编辑" @click="editUserInfo(index)"/>
-                        <input type="button" value="删除" @click="deleteUserInfo(index)"/>
-                    </td>
-                </tr>
+                    <tr v-for="(item,index) in list" :key="index">
+                        <td>{{item.visit_id}}</td>
+                        <td>{{item.start_timestamp}}</td>
+                        <td>{{item.end_timestamp}}</td>
+                        <td>{{item.name}}</td>
+                        <td>{{item.email}}</td>
+                        <td>
+                            <input type="button" value="编辑" @click="editUserInfo(index)"/>
+                            <input type="button" value="删除" @click="deleteUserInfo(index)"/>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>

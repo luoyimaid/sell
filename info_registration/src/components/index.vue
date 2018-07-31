@@ -19,7 +19,7 @@
             </div>
             <div>
                 <lead-info :number="1" @leadNameEvent="leadName" @leadEmailEvent="leadEmail" id="leadInfo"></lead-info>
-                <component :is="item.component" :number="num" v-for="item in items"></component>
+                <!-- <component :is="item.component" :number="num" v-for="item in items"></component> -->
             </div>
         </div>
         <!--<div class="content_info_add" @click="addContentInfo('lead-info')">添加带领人+</div>-->
@@ -46,6 +46,10 @@
     import leadInfo from '@/components/leadinfo/leadinfo.vue';
     import leadList from '@/components/leadlist/leadlist.vue';
 
+    var url = window.location.href;
+    var array = url.split("/");
+    var result = array[2];
+    console.log(result);
     // 随机生成十位数字，字母组合字符
     function randomWord(randomFlag, min, max){
         var str = "",
@@ -176,6 +180,7 @@
                 // 发送请求的数据格式是 form-data 格式
                 let formData = publicFormData();
                 formData.append('req', 'list');
+                formData.append('Host','yq01-rp-nlp-rd0-b33aa.yq01:8080');
                 // 用post请求数据
                 axios.post('http://10.155.45.32:8080/durobot/guiderinfo', formData).then(resp => {
                     // console.log(resp.data.data);
@@ -186,6 +191,7 @@
                     //          -- i;
                     //     }
                     // }
+                    // console.log(result,array);
                     console.log(resp.data);
                     // 将请求到的时间戳转换为普通时间格式
                     for (let i = 0; i < this.list.length; i++) {

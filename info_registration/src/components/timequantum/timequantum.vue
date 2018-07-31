@@ -3,6 +3,7 @@
         <option>10:30 - 12:00</option>
         <option>14:00 - 15:30</option>
         <option>15:30 - 17:00</option>
+        <option>17:00 - 24:00</option>
     </select>
 </template>
 
