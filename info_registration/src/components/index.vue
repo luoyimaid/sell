@@ -265,22 +265,34 @@
                     }
                     axios.post('http://10.155.45.32:8080/durobot/guiderinfo', addFormData).then(resp => {
                         console.log(resp.data);
-                        if(typeof resp.data === "string"){
-                            let str = resp.data.slice(-76);
-                            let data = JSON.parse(str);
-                            // console.log(data);
-                            if(data.error === 9004){
-                                // alert("姓名与邮箱不匹配，请确认！");
-                                this.$alert('姓名与邮箱不匹配，请确认！', '提示：', {
-                                    confirmButtonText: '确定',
-                                    callback: action => {
-                                        this.$message({
-                                            type: 'info',
-                                            message: `action: ${ action }`
-                                        });
-                                    }
-                                });
-                            }
+                        // if(typeof resp.data === "string"){
+                        //     let str = resp.data.slice(-76);
+                        //     let data = JSON.parse(str);
+                        //     // console.log(data);
+                        //     if(data.error === 9004){
+                        //         // alert("姓名与邮箱不匹配，请确认！");
+                        //         this.$alert('姓名与邮箱不匹配，请确认！', '提示：', {
+                        //             confirmButtonText: '确定',
+                        //             callback: action => {
+                        //                 this.$message({
+                        //                     type: 'info',
+                        //                     message: `action: ${ action }`
+                        //                 });
+                        //             }
+                        //         });
+                        //     }
+                        // }
+                        if(resp.data.error === 9004){
+                            // alert("姓名与邮箱不匹配，请确认！");
+                            this.$alert('姓名与邮箱不匹配，请确认！', '提示：', {
+                                confirmButtonText: '确定',
+                                callback: action => {
+                                    this.$message({
+                                        type: 'info',
+                                        message: `action: ${ action }`
+                                    });
+                                }
+                            });
                         }
                         else if(resp.data.error === 9002){
                             // alert("此员工不存在，请确认！");
