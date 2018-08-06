@@ -11,7 +11,7 @@
         </div>
         <div class="add_guest">
             <guest-info @onLoadName="onLoadName" @onLoadCall="onLoadCall" @onLoadLevel="onLoadLevel" @onLoadImage="onLoadImage"></guest-info>
-            <component :is="item.component" v-for="item in items"></component>
+            <component :is="item.component" v-for="item in items" :key="item"></component>
         </div>
         <input type="button" value="提交" @click="submitGuestInfo"  class="submit_guest_info"/>
         <hr id="hr"/>
